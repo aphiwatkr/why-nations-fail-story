@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>โคมแก้ว — นิทานเมืองกติกา (Why Nations Fail ฉบับน้องฮูก้า)</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23FDF6E8'/%3E%3Crect x='10' y='8' width='12' height='16' rx='3' fill='%23F2B441' stroke='%238a5a2b' stroke-width='1.5'/%3E%3Crect x='13' y='12' width='6' height='9' rx='1.5' fill='%23FFF3C4'/%3E%3C/svg%3E">
+<meta name="description" content="นิทานภาพ 15 บท 45 ตอน เล่าเรื่องกติกาเมืองจากหนังสือ Why Nations Fail ให้เด็กฟัง โดยตาแดน ตาเจม พี่ไรอั้น น้องฮูก้า และโมจิ">
+<style>
+:root{
+  --cream:#FDF6E8; --cream2:#F7EDD8; --paper:#FFFDF6; --ink:#3A2E2A; --ink2:#6B5B4E;
+  --brown:#8a5a2b; --brown2:#6B4423; --accent:#F08A4B; --accent2:#E15A4E; --gold:#F2C64B;
+  --green:#7FB77E; --line:#EAD9B8; --shadow:0 6px 24px rgba(58,46,42,.14);
+  --imgbg:linear-gradient(180deg,#F2E4C8 0%,#FDF6E8 100%);
+}
+html[data-theme="night"]{
+  --cream:#241F1B; --cream2:#2E2822; --paper:#332C24; --ink:#F2E4C8; --ink2:#C9B69B;
+  --brown:#C99B4E; --brown2:#E8C27E; --line:#4A3E30; --shadow:0 6px 24px rgba(0,0,0,.5);
+  --imgbg:linear-gradient(180deg,#1A1613 0%,#241F1B 100%);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0; padding:0; height:100%}
+body{
+  font-family:"Noto Sans Thai","Sarabun","IBM Plex Sans Thai",-apple-system,"Segoe UI",system-ui,sans-serif;
+  background:var(--cream); color:var(--ink); line-height:1.75; overflow:hidden;
+}
+button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit}
+svg{display:block}
+/* ---------- โครงหลัก ---------- */
+#app{height:100dvh; display:flex; flex-direction:column; position:relative}
+.view{position:absolute; inset:0; display:none; flex-direction:column; overflow:hidden}
+.view.on{display:flex}
+/* ---------- แถบบน ---------- */
+.topbar{
+  flex:none; display:flex; align-items:center; gap:10px; padding:10px 14px;
+  border-bottom:2px solid var(--line); background:var(--cream2); z-index:5;
+}
+.topbar .logo{display:flex; align-items:center; gap:8px; font-weight:800; font-size:17px; color:var(--brown2)}
+.topbar .logo svg{width:26px; height:26px}
+.topbar .sp{flex:1}
+.chip-btn{
+  border:2px solid var(--line); background:var(--paper); color:var(--ink);
+  border-radius:999px; padding:6px 14px; font-size:14px; font-weight:700;
+  display:inline-flex; align-items:center; gap:6px; transition:.15s;
+}
+.chip-btn:hover{border-color:var(--brown); transform:translateY(-1px)}
+/* ---------- ปก ---------- */
+#view-cover{align-items:center; justify-content:center; gap:8px; padding:20px; text-align:center; overflow:auto}
+#view-cover .cover-art{width:min(78vw,520px); max-height:52dvh; border-radius:24px; border:4px solid var(--line); box-shadow:var(--shadow); overflow:hidden; background:var(--imgbg)}
+#view-cover .cover-art img{width:100%; height:100%; object-fit:cover}
+#view-cover h1{font-size:clamp(24px,5vw,38px); margin:14px 0 4px; color:var(--brown2); letter-spacing:.5px}
+#view-cover .sub{color:var(--ink2); font-size:clamp(14px,2.6vw,17px); margin:0 0 6px; max-width:560px}
+#view-cover .kids{color:var(--ink2); font-size:14px; margin-bottom:14px}
+#view-cover .kids b{color:var(--accent2)}
+.big-btn{
+  background:var(--accent); color:#fff; font-size:18px; font-weight:800;
+  border-radius:999px; padding:13px 34px; box-shadow:var(--shadow); transition:.15s;
+}
+.big-btn:hover{transform:translateY(-2px) scale(1.02)}
+.big-btn.ghost{background:var(--paper); color:var(--brown2); border:2px solid var(--line)}
+.btn-row{display:flex; gap:12px; flex-wrap:wrap; justify-content:center}
+/* ---------- สารบัญ ---------- */
+#view-toc{overflow:auto; padding:18px 16px 40px}
+.toc-head{max-width:880px; margin:0 auto 14px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.toc-head h2{margin:0; font-size:24px; color:var(--brown2)}
+.toc-head .count{color:var(--ink2); font-size:14px}
+.toc-grid{max-width:880px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px}
+.toc-card{
+  display:flex; gap:12px; align-items:center; background:var(--paper);
+  border:2px solid var(--line); border-radius:18px; padding:10px; text-align:left;
+  transition:.15s; box-shadow:0 2px 10px rgba(58,46,42,.06);
+}
+.toc-card:hover{border-color:var(--accent); transform:translateY(-2px); box-shadow:var(--shadow)}
+.toc-card .thumb{flex:none; width:86px; height:64px; border-radius:12px; overflow:hidden; background:var(--imgbg); border:2px solid var(--line)}
+.toc-card .thumb img{width:100%; height:100%; object-fit:cover}
+.toc-card .meta{min-width:0; flex:1}
+.toc-card .no{font-size:12px; font-weight:800; color:var(--accent); letter-spacing:.5px}
+.toc-card .t{font-weight:800; font-size:15.5px; line-height:1.35; margin:1px 0 4px}
+.toc-card .dots{display:flex; gap:4px; align-items:center}
+.toc-card .dot{width:9px; height:9px; border-radius:50%; background:var(--line)}
+.toc-card .dot.read{background:var(--green)}
+.toc-card .done{font-size:11px; color:var(--green); font-weight:700; margin-left:6px}
+/* ---------- หน้าอ่าน ---------- */
+#view-read{background:var(--imgbg)}
+.read-top{
+  flex:none; display:flex; align-items:center; gap:8px; padding:8px 64px;
+  background:var(--cream2); border-bottom:2px solid var(--line); z-index:6;
+}
+.read-top .bk{font-size:14px; font-weight:700; color:var(--brown2); white-space:nowrap}
+.read-top .ti{font-size:14px; font-weight:800; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.read-top .sp{flex:1}
+.read-top .pn{font-size:12.5px; color:var(--ink2); white-space:nowrap}
+.stage{flex:1; display:flex; min-height:0; position:relative}
+.stage-inner{flex:1; display:flex; flex-direction:column; min-width:0; min-height:0}
+.img-wrap{
+  flex:none; height:clamp(200px,40dvh,340px); display:flex; align-items:center; justify-content:center;
+  padding:10px 56px 0; position:relative;
+}
+.img-wrap img{max-width:100%; max-height:100%; border-radius:18px; border:3px solid var(--line); box-shadow:var(--shadow); background:var(--cream)}
+.part-cap{
+  position:absolute; left:70px; bottom:8px; max-width:calc(100% - 140px);
+  background:var(--paper); border:2px solid var(--line); color:var(--ink2);
+  font-size:12.5px; font-weight:700; border-radius:999px; padding:3px 14px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-shadow:0 2px 8px rgba(58,46,42,.12);
+}
+.text-wrap{flex:1; min-height:0; display:flex; justify-content:center; padding:10px 56px 12px}
+.text-card{
+  width:100%; max-width:720px; background:var(--paper); border:2px solid var(--line);
+  border-radius:20px; box-shadow:var(--shadow); overflow-y:auto; padding:16px 18px 20px;
+  scroll-behavior:smooth; -webkit-overflow-scrolling:touch;
+}
+.line{display:flex; gap:10px; margin:0 0 10px; align-items:flex-start}
+/* แถวตัวละครประจำตอน */
+.cast{display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px; padding-bottom:12px; border-bottom:2px dashed var(--line)}
+.cast-ch{display:flex; align-items:center; gap:5px; background:var(--cream2); border:1.5px solid var(--line); border-radius:999px; padding:3px 10px 3px 3px; max-width:170px}
+.cast-ch img{width:30px; height:33px; object-fit:contain; flex:none}
+.cast-ch i{font-style:normal; font-size:12px; font-weight:800; color:var(--brown2); line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0}
+.cast-ch em{display:block; font-style:normal; font-size:10px; font-weight:600; color:var(--ink2)}
+/* ย่อหน้านิทาน */
+.para{font-size:17px; line-height:2.05; margin:0 0 14px; color:var(--ink)}
+.para:first-letter{}
+.para q, .para .say{quotes:"“" "”"}
+/* คำถามท้ายบท */
+.qa{margin-top:14px; border-top:2px dashed var(--line); padding-top:12px}
+.qa h4{margin:0 0 8px; font-size:15px; color:var(--accent2)}
+.qa ol{margin:0 0 12px; padding-left:22px; color:var(--ink)}
+.qa li{margin-bottom:6px; font-size:14.5px}
+.qa .note{background:var(--cream2); border-radius:12px; padding:10px 12px; font-size:13px; color:var(--ink2)}
+.qa .note b{color:var(--brown2)}
+.end-actions{display:flex; gap:10px; justify-content:center; margin-top:14px; flex-wrap:wrap}
+/* ปุ่มเลื่อนข้างขอบ */
+.navbtn{
+  position:absolute; top:50%; transform:translateY(-50%); z-index:7;
+  width:46px; height:64px; border-radius:14px;
+  background:var(--paper); border:2px solid var(--line); box-shadow:var(--shadow);
+  display:flex; align-items:center; justify-content:center; font-size:24px; color:var(--brown2);
+  transition:.12s; user-select:none;
+}
+.navbtn:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
+.navbtn:disabled{opacity:.25; pointer-events:none}
+#btn-prev{left:8px} #btn-next{right:8px}
+/* แถบความคืบหน้า */
+.pbar{flex:none; height:6px; background:var(--line); position:relative}
+.pbar .fill{position:absolute; inset:0 auto 0 0; background:linear-gradient(90deg,var(--gold),var(--accent)); border-radius:0 3px 3px 0; transition:width .25s}
+/* toast */
+#toast{
+  position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
+  background:var(--ink); color:var(--cream); padding:9px 20px; border-radius:999px;
+  font-size:13.5px; font-weight:700; transition:.3s; z-index:99; pointer-events:none;
+}
+#toast.show{transform:translateX(-50%) translateY(0)}
+/* มือถือ */
+@media (max-width:640px){
+  .read-top{padding:8px 56px}
+  .img-wrap{height:clamp(170px,34dvh,260px); padding:8px 44px 0}
+  .part-cap{left:54px; max-width:calc(100% - 108px)}
+  .text-wrap{padding:8px 44px 10px}
+  .navbtn{width:38px; height:56px; font-size:20px}
+  #btn-prev{left:4px} #btn-next{right:4px}
+  .line .av{width:36px}
+  .line .av img{width:36px; height:40px}
+  .line .tx{font-size:15px}
+  .toc-grid{grid-template-columns:1fr 1fr}
+  .toc-card{flex-direction:column; text-align:center; gap:8px; padding:12px 8px}
+  .toc-card .thumb{width:100%; height:80px}
+}
+@media (max-width:420px){ .toc-grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ ปก ══ -->
+  <section class="view" id="view-cover">
+    <div class="cover-art"><img src="assets/cover.svg" alt="ปกนิทาน ตาแดน ตาเจม เล่านิทานใต้ต้นไทรยามค่ำ"></div>
+    <h1>โคมแก้ว 🏮 นิทานเมืองกติกา</h1>
+    <p class="sub">เรื่องเล่า 15 บท • 45 ตอน จากหนังสือ <i>Why Nations Fail</i> — ทำไมเมืองหนึ่งรุ่ง เมืองหนึ่งจน เล่าผ่านกติกาของแต่ละเมือง</p>
+    <p class="kids">ตาแดน 🦁 กับ ตาเจม 🐘 เล่าให้ <b>พี่ไรอั้น 🦊</b> <b>น้องฮูก้า 🦉</b> และ <b>โมจิ 🐶</b> ฟังทุกคืนใต้ต้นไทร</p>
+    <div class="btn-row">
+      <button class="big-btn" id="btn-start">เริ่มตอนแรก 🏮</button>
+      <button class="big-btn ghost" id="btn-toc">สารบัญทั้งเล่ม</button>
+    </div>
+    <p class="kids" id="resume-hint" style="margin-top:10px"></p>
+  </section>
+
+  <!-- ══ สารบัญ ══ -->
+  <section class="view" id="view-toc">
+    <div class="toc-head">
+      <h2>📖 สารบัญ</h2>
+      <span class="count" id="toc-count"></span>
+      <span class="sp" style="flex:1"></span>
+      <button class="chip-btn" id="btn-cover">🏮 หน้าปก</button>
+    </div>
+    <div class="toc-grid" id="toc-grid"></div>
+  </section>
+
+  <!-- ══ หน้าอ่าน ══ -->
+  <section class="view" id="view-read">
+    <div class="read-top">
+      <button class="chip-btn" id="btn-back">← สารบัญ</button>
+      <span class="ti" id="r-title"></span>
+      <span class="sp"></span>
+      <span class="pn" id="r-part"></span>
+      <button class="chip-btn" id="btn-theme" title="สลับโหมดกลางวัน / ก่อนนอน">🌙</button>
+    </div>
+    <div class="pbar"><div class="fill" id="r-fill"></div></div>
+    <div class="stage">
+      <button class="navbtn" id="btn-prev" aria-label="ตอนก่อน">❮</button>
+      <div class="stage-inner">
+        <div class="img-wrap">
+          <img id="r-img" alt="ภาพประกอบตอนนี้">
+          <div class="part-cap" id="r-cap"></div>
+        </div>
+        <div class="text-wrap">
+          <div class="text-card" id="r-text"></div>
+        </div>
+      </div>
+      <button class="navbtn" id="btn-next" aria-label="ตอนถัดไป">❯</button>
+    </div>
+  </section>
+
+  <div id="toast"></div>
+</div>
+
+<script>window.WNF = [];</script>
+<script src="js/ch01.js"></script><script src="js/ch02.js"></script><script src="js/ch03.js"></script>
+<script src="js/ch04.js"></script><script src="js/ch05.js"></script><script src="js/ch06.js"></script>
+<script src="js/ch07.js"></script><script src="js/ch08.js"></script><script src="js/ch09.js"></script>
+<script src="js/ch10.js"></script><script src="js/ch11.js"></script><script src="js/ch12.js"></script>
+<script src="js/ch13.js"></script><script src="js/ch14.js"></script><script src="js/ch15.js"></script>
+<script>
+"use strict";
+/* ═══ ชื่อตัวละคร + สปีชีส์ (key → แสดงผล; ไฟล์ avatar บางตัวชื่อต่างจาก key) ═══ */
+const NAME = {
+  dan:["ตาแดน","สิงโตผู้เล่า"], jem:["ตาเจม","ช้างผู้เล่า"], rian:["พี่ไรอั้น","จิ้งจอกนักสืบ"],
+  huka:["น้องฮูก้า","นกฮูกขี้ง่วง"], moji:["โมจิ","หมาจอมหิว"], timmy:["ทิมมี่","กระต่ายแห่งหมอกทึบ"],
+  pippo:["ปิ๊ปโป้","หมูแห่งซันนี่เวล"], max:["ท่านแม็กซ์","หมาป่าเฝ้ารั้วเงิน"], mali:["มาลี","หนูหัวขบถ"],
+  ben:["เบน","กระรอกจดสมุด"], goldo:["ท่านเคานต์กอลโด้","จิ้งจกทอง"], otto:["อ็อตโต้","บีเวอร์ช่างเขื่อน"],
+  freeda:["ฟรีด้า","เม่นคิดตื้น"], noah:["โนอาห์","กวางเมืองตะวันออก"], baron:["ลุงบารอน","แพะผู้เฒ่า"],
+  maxim:["ท่านประธานแม็กซิม","หมีเทาจอมสั่ง"], yena:["เยน่า","แมวเมืองไอออนฟอลล์"], boris:["บอริส","เต่าช่างเครื่อง"],
+  marco:["มาร์โก","นากเมืองน้ำ"], elder:["ปู่ยม","แมวชรากลุ่มเรือเก่า"], john:["กษัตริย์ยอห์น","หมาป่ามงกุฎทอง"],
+  will:["วิลล์","แรคคูนพ่อค้าพิมพ์"], franz:["จักรพรรดิฟรานซ์","เสือแห่งภูเขา"], seb:["เซบาสเตียน","ม้าส่งข่าว"],
+  kalum:["คาลัม","แกะช่างทอ"], leela:["ลีลา","กระต่ายครีมจอมจด"], anchor:["กัปตันเหมียว","แมวเรือแองเคอร์"],
+  tommy:["ทอมมี่","หมาขาวเริ่มใหม่"], pasha:["ท่านปาชา","อูฐเจ้าน้ำมัน"], matsu:["มัตสึ","ลิงนักเรียนกลับบ้าน"],
+  sam:["แซม","แรคคูนนักพิมพ์"], frank:["ประธานแฟรงก์","ควายเจ้าแผน"], jojo:["โจโจ้","ลิงผู้ต่อสู้"],
+  cleo:["คลีโอ","หนูเมืองคิวขนมปัง"], eva:["ยายเอวา","เต่าผู้รอบรู้"], seretse:["เซเรตเซ","เสือดาวผู้กลับบ้าน"],
+  rosa:["แม่โรซ่า","ไก่แม่ผู้ไม่ยอมลุก"], farmer:["ชาวไร่แพะ","สมาชิกสิบแปดคน"], sailor:["กะลาสีเป็ด","เป็ดเมืองท่า"],
+  miner:["คนงานเหมือง","ฮิปโปหน้าตึก"],
+};
+const AVFILE = { anchor:"anchormeow", elder:"eldercat" }; // ไฟล์ avatar ชื่อต่างจาก key
+
+/* ═══ state ═══ */
+const LS = { theme:"wnf-theme", read:"wnf-read", last:"wnf-last" };
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v==null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} },
+};
+let theme = store.get(LS.theme,"day");
+const _rawRead = store.get(LS.read,[]);
+let readSet = new Set((Array.isArray(_rawRead) ? _rawRead : Object.keys(_rawRead||{})).filter(k=>/^\d+-\d+$/.test(k))); // ทิ้ง key เก่า v1
+let last = store.get(LS.last,null); // {ch,part}
+
+const $ = s => document.querySelector(s);
+const chByN = n => WNF.find(c=>c.n===+n);
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  $("#btn-theme").textContent = theme==="day" ? "🌙" : "☀️";
+}
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1600);
+}
+function markRead(ch,part){
+  const key = ch+"-"+part;
+  if(!readSet.has(key)){ readSet.add(key); store.set(LS.read,[...readSet]); }
+}
+function chReadCount(ch){ return ch.parts.filter((_,i)=>readSet.has(ch.n+"-"+(i+1))).length; }
+function totalRead(){ return WNF.reduce((a,c)=>a+chReadCount(c),0); }
+
+/* ═══ routing ═══ */
+function show(view){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
+  $("#view-"+view).classList.add("on");
+}
+function route(){
+  const h = location.hash.replace(/^#\/?/,"");
+  let m;
+  if((m=h.match(/^ch\/(\d+)(?:\/(\d+))?$/)) && chByN(m[1])){
+    openPart(+m[1], +(m[2]||1)); return;
+  }
+  if(h==="toc"){ renderTOC(); show("toc"); return; }
+  show("cover"); renderResume();
+}
+function go(hash){ location.hash = hash; }
+
+/* ═══ ปก ═══ */
+function renderResume(){
+  const el = $("#resume-hint"); el.innerHTML="";
+  if(last && chByN(last.ch)){
+    const c=chByN(last.ch);
+    el.innerHTML = `คราวก่อนหยุดไว้ที่ <b>บทที่ ${c.n} — ${esc(c.th)}</b> ตอนที่ ${last.part} <button class="chip-btn" id="btn-resume">เล่าต่อ →</button>`;
+    $("#btn-resume").onclick = ()=>go(`/ch/${last.ch}/${last.part}`);
+  }
+}
+
+/* ═══ สารบัญ ═══ */
+function renderTOC(){
+  const g = $("#toc-grid"); g.innerHTML="";
+  WNF.forEach(c=>{
+    const rc = chReadCount(c);
+    const b = document.createElement("button");
+    b.className="toc-card";
+    b.innerHTML = `
+      <div class="thumb"><img src="${c.parts[0].img}" alt="บทที่ ${c.n}" loading="lazy"></div>
+      <div class="meta">
+        <div class="no">บทที่ ${String(c.n).padStart(2,"0")}</div>
+        <div class="t">${esc(c.th)}</div>
+        <div class="dots">
+          ${c.parts.map((_,i)=>`<span class="dot ${readSet.has(c.n+"-"+(i+1))?"read":""}"></span>`).join("")}
+          ${rc===c.parts.length?`<span class="done">✓ เล่าจบ</span>`:`<span class="done" style="color:var(--ink2)">${rc}/3</span>`}
+        </div>
+      </div>`;
+    b.onclick = ()=>go(`/ch/${c.n}/1`);
+    g.appendChild(b);
+  });
+  $("#toc-count").textContent = `เล่าแล้ว ${totalRead()}/45 ตอน`;
+}
+
+/* ═══ หน้าอ่าน ═══ */
+function openPart(n, p){
+  const c = chByN(n); if(!c) return show("cover");
+  if(p<1) p=1; if(p>c.parts.length) p=c.parts.length;
+  const part = c.parts[p-1];
+  show("read");
+  $("#r-title").textContent = `บท ${n} · ${c.th}`;
+  $("#r-part").textContent = `ตอน ${p}/${c.parts.length}`;
+  $("#r-img").src = part.img;
+  $("#r-img").alt = `ภาพประกอบ: ${part.t}`;
+  $("#r-cap").textContent = part.t;
+
+  // กล่องนิทาน (prose) — แถวตัวละครประจำตอน + ย่อหน้า
+  const card = $("#r-text"); card.innerHTML="";
+  const cast = part.cast||[];
+  if(cast.length){
+    const strip = document.createElement("div");
+    strip.className="cast";
+    strip.innerHTML = cast.map(id=>{
+      const nm=NAME[id]||[id,""]; const file=AVFILE[id]||id;
+      return `<span class="cast-ch"><img src="assets/c/${file}.svg" alt="${nm[0]}" loading="lazy"><i>${nm[0]}<em>${nm[1]}</em></i></span>`;
+    }).join("");
+    card.appendChild(strip);
+  }
+  (part.paras||[]).forEach(tx=>{
+    const p=document.createElement("p");
+    p.className="para"; p.textContent=tx;
+    card.appendChild(p);
+  });
+
+  // ท้ายบท: คำถาม + โน้ตผู้ใหญ่
+  if(p===c.parts.length){
+    const qa = document.createElement("div");
+    qa.className="qa";
+    qa.innerHTML = `<h4>🌸 คำถามนุ่ม ๆ ก่อนนอน</h4>
+      <ol>${c.q.map(q=>`<li>${esc(q)}</li>`).join("")}</ol>
+      <div class="note"><b>เกร็ดผู้ใหญ่:</b> ${esc(c.note)}</div>`;
+    card.appendChild(qa);
+    const end = document.createElement("div");
+    end.className="end-actions";
+    if(n<WNF.length){
+      const nx = chByN(n+1);
+      const b1=document.createElement("button"); b1.className="big-btn"; b1.textContent=`บทต่อไป: ${nx.th} →`;
+      b1.onclick=()=>go(`/ch/${n+1}/1`); end.appendChild(b1);
+    }else{
+      const b1=document.createElement("button"); b1.className="big-btn"; b1.textContent="🎉 จบทั้งเล่ม — กลับสารบัญ";
+      b1.onclick=()=>go("/toc"); end.appendChild(b1);
+    }
+    const b2=document.createElement("button"); b2.className="big-btn ghost"; b2.textContent="สารบัญ";
+    b2.onclick=()=>go("/toc"); end.appendChild(b2);
+    card.appendChild(end);
+  }
+
+  // ปุ่มเลื่อน
+  $("#btn-prev").disabled = (n===1 && p===1);
+  $("#btn-next").disabled = (n===WNF.length && p===c.parts.length);
+  $("#btn-prev").onclick = ()=>{
+    if(p>1) go(`/ch/${n}/${p-1}`);
+    else go(`/ch/${n-1}/${chByN(n-1).parts.length}`);
+  };
+  $("#btn-next").onclick = ()=>{
+    markRead(n,p); // นับว่าเล่าจบเมื่อกดไปต่อ
+    if(p<c.parts.length) go(`/ch/${n}/${p+1}`);
+    else go(`/ch/${n+1}/1`);
+  };
+
+  // ความคืบหน้าทั้งเล่ม
+  const idx = (n-1)*3 + p;
+  $("#r-fill").style.width = (idx/45*100)+"%";
+
+  markRead(n,p);
+  last = {ch:n, part:p}; store.set(LS.last,last);
+  card.scrollTop = 0;
+}
+
+/* ═══ คีย์บอร์ด + swipe ═══ */
+document.addEventListener("keydown",e=>{
+  if(!$("#view-read").classList.contains("on")) return;
+  if(e.key==="ArrowRight" && !$("#btn-next").disabled) $("#btn-next").click();
+  if(e.key==="ArrowLeft" && !$("#btn-prev").disabled) $("#btn-prev").click();
+});
+(function(){
+  let x0=null,y0=null;
+  const st=$("#view-read");
+  st.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+  st.addEventListener("touchend",e=>{
+    if(x0==null) return;
+    const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5){
+      if(dx<0 && !$("#btn-next").disabled) $("#btn-next").click();
+      if(dx>0 && !$("#btn-prev").disabled) $("#btn-prev").click();
+    }
+    x0=null;
+  },{passive:true});
+})();
+
+/* ═══ ปุ่มทั่วไป ═══ */
+$("#btn-start").onclick = ()=>go("/ch/1/1");
+$("#btn-toc").onclick   = ()=>go("/toc");
+$("#btn-cover").onclick = ()=>go("/");
+$("#btn-back").onclick  = ()=>go("/toc");
+$("#btn-theme").onclick = ()=>{
+  theme = theme==="day"?"night":"day";
+  store.set(LS.theme,theme); applyTheme();
+  toast(theme==="night"?"โหมดก่อนนอน 🌙 ไฟอุ่นลงแล้ว":"โหมดกลางวัน ☀️");
+};
+
+window.addEventListener("hashchange",route);
+applyTheme();
+route();
+</script>
+</body>
+</html>

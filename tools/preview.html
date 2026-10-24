@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><title>preview</title>
+<style>body{margin:0;background:#f4ead8;font-family:sans-serif;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid img{width:100%;border-radius:12px;display:block;background:#fff}
+.lab{font-size:13px;color:#555;margin:4px 0 0}
+.av{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.av div{text-align:center;font-size:11px;color:#444}
+.av img{width:72px;height:78px;display:block;margin:0 auto}
+</style></head><body>
+<div class="grid" id="g"></div>
+<div class="av" id="a"></div>
+<script>
+const keys=["cover","p1-1","p1-2","p3-2","p5-1","p7-2","p9-2","p12-2","p14-2","p15-3","p6-1","p10-2"];
+document.getElementById("g").innerHTML=keys.map(k=>`<div><img src="../assets/${k}.svg"><p class="lab">${k}</p></div>`).join("");
+const ids="dan jem rian huka moji timmy pippo max mali ben goldo otto freeda noah baron maxim yena boris marco eldercat john will franz seb kalum leela anchormeow tommy pasha matsu sam frank jojo cleo eva seretse rosa farmer sailor miner".split(" ");
+document.getElementById("a").innerHTML=ids.map(i=>`<div><img src="../assets/c/${i}.svg">${i}</div>`).join("");
+</script></body></html>
