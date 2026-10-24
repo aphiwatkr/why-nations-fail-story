@@ -1,3 +1,4 @@
 _qc/
 .playwright-mcp/
 .DS_Store
+_site/
