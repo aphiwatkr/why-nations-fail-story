@@ -119,6 +119,15 @@ const SPECIES = {
   hen: { fur: "#F2E3D0", comb: C(-4,-25,3.5,"#E15A4E")+C(1,-27,3.5,"#E15A4E")+C(6,-25,3.5,"#E15A4E"),
     beak: P("M-4,6 L4,6 L0,11 Z", "#E8933E") + C(0, 13, 1.8, "#D97F2E"), wattle: E(0, 15, 2.4, 3.4, "#E15A4E"),
     wings: E(-18, 4, 7, 11, "#E5D5BC") + E(18, 4, 7, 11, "#E5D5BC"), tail: P("M10,-8 q10,-8 14,-2 q-7,0 -10,5 z", "#D9C5A8") },
+  // ไรอั้น: สิงโตสไตล์ Ryan ของ Kakao Friends — ไม่มีแผงคอ ตัวสีน้ำตาลอ่อน หูเล็กมน จมูกแท้งกลม (inference จากดีไซน์อ้างอิง)
+  ryan: { fur: "#CBA36E",
+    ears: C(-18, -16, 8, "#B8905A") + C(18, -16, 8, "#B8905A") + C(-18, -15, 4.2, "#E3C48F") + C(18, -15, 4.2, "#E3C48F"),
+    muzzle: E(0, 9, 10, 7.5, "#EEDCB4") + E(0, 5, 3.4, 2.6, "#5E4433"),
+    tail: P("M16,-2 q14,-4 12,-16", "none", 'stroke="#B8905A" stroke-width="5" stroke-linecap="round" fill="none"') + C(29, -19, 4, "#B8905A") },
+  // ฮูกา: เด็กผู้ชายตัวน้อย — ผมทรงหม้อแกงสีน้ำตาลเข้ม หน้าตาเป็นจุด แก้มแดง
+  boy: { fur: "#F5CFA5",
+    ears: C(-24.5, -2, 4.6, "#EFC49B") + C(24.5, -2, 4.6, "#EFC49B"),
+    hair: P("M-26,-8 a26,26 0 0 1 52,0 z", "#5E4433") + C(-13, -8, 3.8, "#5E4433") + C(0, -8, 4.1, "#5E4433") + C(13, -8, 3.8, "#5E4433") + P("M-2,-33 q4,-8 11,-6 q-6,1 -7,7 z", "#5E4433") },
   leopard: { fur: "#E8B94B", ears: P("M-19,-13 L-24,-30 L-7,-20 Z", "#E8B94B") + P("M19,-13 L24,-30 L7,-20 Z", "#E8B94B") + C(-17,-21,2.4,"#3E4653")+C(17,-21,2.4,"#3E4653"),
     spots: C(-13,-6,1.7,"#3E4653")+C(8,-10,1.7,"#3E4653")+C(14,2,1.7,"#3E4653")+C(-6,12,1.7,"#3E4653"),
     muzzle: E(0, 8, 8, 5.5, "#FBEED2") + C(0, 4, 2.8, "#5E4433"), tail: P("M16,-4 q16,-2 14,-18 q7,12 -3,22 q-6,5 -11,-4", "none", 'stroke="#E8B94B" stroke-width="6.5" stroke-linecap="round" fill="none"')+C(28,-23,2,"#3E4653") },
@@ -158,8 +167,8 @@ const ITEM = {
 // ลำดับวาดหน้า: หู/หลัง → หัวกลม → หน้า(แกะ/ลิง) แผงคอ(ม้า) หงอน(ไก่) → แผ่นตา/ลาย/จุด → ปาก-จมูก → ตา → แก้ม → ปาก/จะงอย → งวง(ช้าง) → คิ้ว/หงอน/เขา → ของประดับ
 function headParts(sp, d, fur, emo, acc) {
   const beakOrMouth = (sp === "owl" || sp === "hen") ? d.beak : sp === "duck" ? d.bill : mouth(emo);
-  // ใส่แว่นหรือเป็นแรคคูน (หน้ากากเข้ม) → ตาโตให้เห็นชัดเหนืออุปกรณ์
-  const eyeArt = sp === "owl" ? owlEyes() : (acc.includes("glasses") || sp === "raccoon") ? eyes("wow") : eyes(emo);
+  // ใส่แว่นหรือเป็นแรคคูน (หน้ากากเข้ม) → ตาโตให้เห็นชัดเหนืออุปกรณ์ / ฮูกใส่แว่นก็ใช้ตาชุดแว่น
+  const eyeArt = (sp === "owl" && !acc.includes("glasses")) ? owlEyes() : (acc.includes("glasses") || sp === "raccoon") ? eyes("wow") : eyes(emo);
   return (d.ears || "") + (d.back || "") + C(0, 0, 26, fur) +
     (d.face || "") + (d.mane || "") + (d.comb || "") +
     (d.discs || "") + (d.stripes || "") + (d.spots || "") +
@@ -181,6 +190,9 @@ function chara({ sp, x = 0, y = 0, s = 1, flip = false, emo = "norm", acc = [], 
     body = E(-9, -20, 10, 9, fur) + E(9, -20, 10, 9, fur) + R(-14, -18, 28, 18, 9, fur);
   } else if (sp === "owl") {
     body = E(0, -16, 17, 16, fur) + (d.belly || "") + (d.wings || "");
+  } else if (sp === "boy") {
+    // เสื้อสีเขียวมิ้นต์ + กางเกงน้ำตาล + ขาเปลือกข้าวบาล
+    body = R(-15, -30, 30, 25, 10, "#57A99A") + R(-15, -12, 30, 8, 4, "#8C6239") + R(-10, -8, 8, 8, 3, fur) + R(2, -8, 8, 8, 3, fur);
   } else if (sp === "sheep") {
     body = E(0, -16, 18, 14, "#EAE0C8") + R(-10, -12, 20, 12, 6, "#F2EAD8");
   } else if (sp === "hen" || sp === "duck") {
@@ -190,6 +202,7 @@ function chara({ sp, x = 0, y = 0, s = 1, flip = false, emo = "norm", acc = [], 
   }
   const feet = (sp === "duck" ? E(-8, -2, 6, 3, "#E8933E") + E(8, -2, 6, 3, "#E8933E")
     : sp === "hen" ? P("M-9,-2 l6,0 l-1,4 l-6,0 z M3,-2 l6,0 l1,4 l-6,0 z", "#E8933E")
+    : sp === "boy" ? E(-9, -2, 7, 4.2, "#5E4433") + E(9, -2, 7, 4.2, "#5E4433")
     : E(-9, -2, 7, 4, furD) + E(9, -2, 7, 4, furD));
   const tailG = d.tail || d.tail2 || "";
   const itemG = item && ITEM[item] ? ITEM[item] : "";
@@ -281,10 +294,10 @@ const PROPS = {
 /* ---------- roster ตัวละคร ---------- */
 // [id, species, palette-override?, default acc/items]
 const ROSTER = {
-  dan:   { sp: "lion",     acc: ["glasses", "scarf"] },
+  dan:   { sp: "owl",      acc: ["glasses", "scarf"] },
   jem:   { sp: "elephant", acc: ["cap"] },
-  rian:  { sp: "fox",      acc: [], item: "magnifier" },
-  huka:  { sp: "owl",      acc: [] },
+  rian:  { sp: "ryan",     acc: [], item: "magnifier" },
+  huka:  { sp: "boy",      acc: [] },
   moji:  { sp: "dog",      acc: [] },
   timmy: { sp: "rabbit" },
   pippo: { sp: "pig" },
