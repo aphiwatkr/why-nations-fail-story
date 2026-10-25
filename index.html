@@ -265,11 +265,13 @@ const NAME = {
 };
 const AVFILE = { anchor:"anchormeow", elder:"eldercat" }; // ไฟล์ avatar ชื่อต่างจาก key
 
-/* ═══ แหล่งภาพ: ปกติใช้ SVG · เมื่อ tools/ai_images.mjs สร้างภาพ AI ครบ (js/ai.js → WNF_AI=true)
-   reader สลับไปใช้ assets/ai/*.jpg ทันทีโดยไม่แก้โค้ดอื่น (chNN.js เก็บ part.img เป็น path เดิม) ═══ */
+/* ═══ แหล่งภาพ: js/ai.js เขียนโดยผู้จัดการภาพ — WNF_AI=true = ใช้ AI ทั้งเล่ม ·
+   WNF_AI=[keys] = ใช้เฉพาะภาพที่มี (ที่เหลือ fallback SVG) · false = SVG ทั้งเล่ม ═══ */
 function imgSrcs(ref){
   const m = ref.match(/p(\d+-\d+)\.\w+$/);
-  if (window.WNF_AI) return m ? `assets/ai/p${m[1]}.jpg` : "assets/ai/cover.jpg";
+  const key = m ? m[1] : "cover";
+  const useAI = window.WNF_AI === true || (Array.isArray(window.WNF_AI) && window.WNF_AI.includes(key));
+  if (useAI) return m ? `assets/ai/p${m[1]}.jpg` : "assets/ai/cover.jpg";
   return m ? `assets/p${m[1]}.svg` : "assets/cover.svg";
 }
 function setArt(imgEl, ref, alt){
