@@ -160,6 +160,17 @@ svg{display:block}
 /* แถบความคืบหน้า */
 .pbar{flex:none; height:6px; background:var(--line); position:relative}
 .pbar .fill{position:absolute; inset:0 auto 0 0; background:linear-gradient(90deg,var(--gold),var(--accent)); border-radius:0 3px 3px 0; transition:width .25s}
+/* โหมดผู้ใหญ่ — สรุปเนื้อหาจริงของหนังสือ */
+.a-badge{display:inline-flex; align-items:center; gap:8px; background:var(--cream2); border:2px solid var(--line); border-radius:999px; padding:4px 14px; margin:0 0 12px}
+.a-badge b{font-family:var(--font-title); font-size:13.5px; color:var(--brown2)}
+.a-badge em{font-style:normal; font-size:12px; color:var(--ink2)}
+.a-sum{font-size:16px; line-height:1.95; margin:0 0 12px; color:var(--ink)}
+.a-pts{margin:0 0 14px; padding:12px 16px; background:var(--cream2); border-radius:14px; list-style:none}
+.a-pts li{position:relative; padding-left:18px; margin-bottom:6px; font-size:14.5px; line-height:1.8; color:var(--ink)}
+.a-pts li::before{content:"•"; position:absolute; left:4px; color:var(--accent)}
+.a-eps{font-size:14px; color:var(--ink2); line-height:1.9; margin:0 0 12px}
+.a-eps b{color:var(--brown2)}
+html[data-mode="adult"] .toc-card .en{font-size:12px; color:var(--ink2); font-style:italic; margin:-2px 0 5px}
 /* toast */
 #toast{
   position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
@@ -204,6 +215,7 @@ svg{display:block}
       <h2>📖 สารบัญ</h2>
       <span class="count" id="toc-count"></span>
       <span class="sp" style="flex:1"></span>
+      <button class="chip-btn btn-mode" title="สลับโหมดนิทาน / สรุปหนังสือจริง">🎓 ผู้ใหญ่</button>
       <button class="chip-btn" id="btn-cover">🏮 หน้าปก</button>
     </div>
     <div class="toc-grid" id="toc-grid"></div>
@@ -216,6 +228,7 @@ svg{display:block}
       <span class="ti" id="r-title"></span>
       <span class="sp"></span>
       <span class="pn" id="r-part"></span>
+      <button class="chip-btn btn-mode" title="สลับโหมดนิทาน / สรุปหนังสือจริง">🎓 ผู้ใหญ่</button>
       <button class="chip-btn" id="btn-theme" title="สลับโหมดกลางวัน / ก่อนนอน">🌙</button>
     </div>
     <div class="pbar"><div class="fill" id="r-fill"></div></div>
@@ -239,6 +252,7 @@ svg{display:block}
 
 <script>window.WNF = [];</script>
 <script src="js/ai.js"></script>
+<script src="js/adult.js"></script>
 <script src="js/ch01.js"></script><script src="js/ch02.js"></script><script src="js/ch03.js"></script>
 <script src="js/ch04.js"></script><script src="js/ch05.js"></script><script src="js/ch06.js"></script>
 <script src="js/ch07.js"></script><script src="js/ch08.js"></script><script src="js/ch09.js"></script>
@@ -286,6 +300,8 @@ const store = {
   set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} },
 };
 let theme = store.get(LS.theme,"day");
+let mode = store.get("wnf-mode","kid");   // "kid" = นิทาน · "adult" = สรุปหนังสือจริง
+document.documentElement.dataset.mode = mode;
 const _rawRead = store.get(LS.read,[]);
 let readSet = new Set((Array.isArray(_rawRead) ? _rawRead : Object.keys(_rawRead||{})).filter(k=>/^\d+-\d+$/.test(k))); // ทิ้ง key เก่า v1
 let last = store.get(LS.last,null); // {ch,part}
@@ -297,6 +313,10 @@ const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;
 function applyTheme(){
   document.documentElement.dataset.theme = theme;
   $("#btn-theme").textContent = theme==="day" ? "🌙" : "☀️";
+}
+function applyMode(){
+  document.documentElement.dataset.mode = mode;
+  document.querySelectorAll(".btn-mode").forEach(b=>b.textContent = mode==="adult" ? "🧸 นิทาน" : "🎓 ผู้ใหญ่");
 }
 function toast(msg){
   const t=$("#toast"); t.textContent=msg; t.classList.add("show");
@@ -348,6 +368,7 @@ function renderTOC(){
       <div class="meta">
         <div class="no">บทที่ ${String(c.n).padStart(2,"0")}</div>
         <div class="t">${esc(c.th)}</div>
+        ${mode==="adult"&&window.WNF_ADULT&&window.WNF_ADULT[c.n]?`<div class="en">${esc(window.WNF_ADULT[c.n].en)}</div>`:""}
         <div class="dots">
           ${c.parts.map((_,i)=>`<span class="dot ${readSet.has(c.n+"-"+(i+1))?"read":""}"></span>`).join("")}
           ${rc===c.parts.length?`<span class="done">✓ เล่าจบ</span>`:`<span class="done" style="color:var(--ink2)">${rc}/3</span>`}
@@ -371,31 +392,48 @@ function openPart(n, p){
   setArt($("#r-img"), part.img, `ภาพประกอบ: ${part.t}`);
   $("#r-cap").textContent = part.t;
 
-  // กล่องนิทาน (prose) — แถวตัวละครประจำตอน + ย่อหน้า
+  // กล่องเนื้อหา — โหมดเด็ก: cast chips + นิทาน · โหมดผู้ใหญ่: สรุปบทจริง + จุดเชื่อมตอนนี้
   const card = $("#r-text"); card.innerHTML="";
-  const cast = part.cast||[];
-  if(cast.length){
-    const strip = document.createElement("div");
-    strip.className="cast";
-    strip.innerHTML = cast.map(id=>{
-      const nm=NAME[id]||[id,""]; const file=AVFILE[id]||id;
-      return `<span class="cast-ch"><img src="assets/c/${file}.svg" alt="${nm[0]}" loading="lazy"><i>${nm[0]}<em>${nm[1]}</em></i></span>`;
-    }).join("");
-    card.appendChild(strip);
+  const A = window.WNF_ADULT && window.WNF_ADULT[n];
+  if(mode==="adult" && A){
+    const head = document.createElement("div");
+    head.className="a-badge";
+    head.innerHTML = `<b>สรุปบทจริง ${n}/15</b><em>${esc(A.en)} — ${esc(A.th||"")}</em>`;
+    card.appendChild(head);
+    A.sum.forEach(t=>{ const p=document.createElement("p"); p.className="a-sum"; p.textContent=t; card.appendChild(p); });
+    const ul=document.createElement("ul"); ul.className="a-pts";
+    ul.innerHTML = A.pts.map(t=>`<li>${esc(t)}</li>`).join("");
+    card.appendChild(ul);
+    const eps=document.createElement("p"); eps.className="a-eps";
+    eps.innerHTML = `<b>ตอนนี้ในหนังสือจริง:</b> ${esc(A.eps[p-1]||"")}`;
+    card.appendChild(eps);
+  }else{
+    const cast = part.cast||[];
+    if(cast.length){
+      const strip = document.createElement("div");
+      strip.className="cast";
+      strip.innerHTML = cast.map(id=>{
+        const nm=NAME[id]||[id,""]; const file=AVFILE[id]||id;
+        return `<span class="cast-ch"><img src="assets/c/${file}.svg" alt="${nm[0]}" loading="lazy"><i>${nm[0]}<em>${nm[1]}</em></i></span>`;
+      }).join("");
+      card.appendChild(strip);
+    }
+    (part.paras||[]).forEach(tx=>{
+      const p=document.createElement("p");
+      p.className="para"; p.textContent=tx;
+      card.appendChild(p);
+    });
   }
-  (part.paras||[]).forEach(tx=>{
-    const p=document.createElement("p");
-    p.className="para"; p.textContent=tx;
-    card.appendChild(p);
-  });
 
-  // ท้ายบท: คำถาม + โน้ตผู้ใหญ่
+  // ท้ายบท: คำถาม + โน้ตผู้ใหญ่ (โหมดผู้ใหญ่: เฉพาะเกร็ดจริง)
   if(p===c.parts.length){
     const qa = document.createElement("div");
     qa.className="qa";
-    qa.innerHTML = `<h4>🌸 คำถามนุ่ม ๆ ก่อนนอน</h4>
+    qa.innerHTML = (mode==="adult"
+      ? `<div class="note"><b>เกร็ดผู้ใหญ่:</b> ${esc(c.note)}</div>`
+      : `<h4>🌸 คำถามนุ่ม ๆ ก่อนนอน</h4>
       <ol>${c.q.map(q=>`<li>${esc(q)}</li>`).join("")}</ol>
-      <div class="note"><b>เกร็ดผู้ใหญ่:</b> ${esc(c.note)}</div>`;
+      <div class="note"><b>เกร็ดผู้ใหญ่:</b> ${esc(c.note)}</div>`);
     card.appendChild(qa);
     const end = document.createElement("div");
     end.className="end-actions";
@@ -465,9 +503,16 @@ $("#btn-theme").onclick = ()=>{
   store.set(LS.theme,theme); applyTheme();
   toast(theme==="night"?"โหมดก่อนนอน 🌙 ไฟอุ่นลงแล้ว":"โหมดกลางวัน ☀️");
 };
+document.querySelectorAll(".btn-mode").forEach(b=>b.onclick = ()=>{
+  mode = mode==="kid"?"adult":"kid";
+  store.set("wnf-mode",mode); applyMode();
+  route(); // เรนเดอร์มุมมองปัจจุบันใหม่ด้วยโหมดใหม่
+  toast(mode==="adult"?"โหมดผู้ใหญ่ 🎓 — สรุปเนื้อหาจริงของ Why Nations Fail":"กลับโหมดนิทาน 🧸");
+});
 
 window.addEventListener("hashchange",route);
 applyTheme();
+applyMode();
 route();
 </script>
 </body>
