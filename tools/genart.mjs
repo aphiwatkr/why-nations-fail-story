@@ -232,13 +232,61 @@ function bg(kind) {
     case "sea": sky = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ED0E8"/><stop offset="1" stop-color="#F2E4C8"/></linearGradient></defs>` + R(0, 0, W, H, 0, "url(#sky)") + C(120, 90, 30, "#FFE9A8") + cloud(520, 70, 0.7);
       hills = P("M0,300 Q200,270 420,300 T800,296 L800,500 L0,500 Z", "#4A9BC4") + P("M0,330 Q400,310 800,330 L800,500 L0,500 Z", "#3D86AC") + [1,2,3,4,5,6].map(i => P(`M${i * 120 - 60},${360 + (i % 2) * 30} q30,8 60,0`, "none", 'stroke="#BFE3F2" stroke-width="4" stroke-linecap="round" opacity="0.5" fill="none"')).join(""); break;
     case "island": sky = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A9D8EC"/><stop offset="1" stop-color="#FDF0D8"/></linearGradient></defs>` + R(0, 0, W, H, 0, "url(#sky)") + C(690, 80, 32, "#FFE9A8") + cloud(180, 70, 0.7);
-      hills = P("M0,340 Q400,300 800,340 L800,500 L0,500 Z", "#4A9BC4") + P("M0,380 Q400,360 800,380 L800,500 L0,500 Z", "#3D86AC") + P("M280,352 Q400,292 520,352 Q400,368 280,352 Z", "#F2E2B4") + P("M330,300 q-6,-50 18,-64", "none", 'stroke="#8a5a2b" stroke-width="6" fill="none"') + [0, 1, 2, 3, 4].map(i => { const a = -2.6 + i * 0.55; return P(`M340,240 q${Math.cos(a) * 55},${Math.sin(a) * 30 + 14} ${Math.cos(a) * 74},${Math.sin(a) * 40 + 8} q${-Math.cos(a) * 26 - 6},2 ${-Math.cos(a) * 60},${-Math.sin(a) * 34 - 6} z`, "#7FB77E"); }).join(""); break;
+      hills = P("M0,340 Q400,300 800,340 L800,500 L0,500 Z", "#4A9BC4") + P("M0,380 Q400,360 800,380 L800,500 L0,500 Z", "#3D86AC")
+        + E(400, 352, 210, 30, "#E8D9A8") + E(400, 348, 185, 26, "#F2E2B4") + E(400, 344, 140, 18, "#F8EFD2")
+        + P("M368,358 q-4,-62 8,-98", "none", 'stroke="#8a5a2b" stroke-width="7" stroke-linecap="round" fill="none"')
+        + P("M376,262 q-54,-18 -86,4 q50,0 82,12 z", "#6FA06A") + P("M376,262 q-44,-34 -80,-28 q40,16 76,32 z", "#7FB77E")
+        + P("M376,262 q-6,-44 -34,-58 q14,30 22,58 z", "#8FCB8A") + P("M376,262 q44,-34 80,-28 q-40,16 -76,32 z", "#7FB77E")
+        + P("M376,262 q54,-18 86,4 q-50,0 -82,12 z", "#6FA06A") + C(382,258,3.5,"#B5803A") + C(374,266,3,"#B5803A")
+        + E(-30 + 400, 360, 6, 3, "#E8D9A8") + E(520, 362, 5, 2.5, "#E8D9A8"); break;
     case "mountain": sky = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B4CFE0"/><stop offset="1" stop-color="#EDE4D4"/></linearGradient></defs>` + R(0, 0, W, H, 0, "url(#sky)") + cloud(600, 80, 0.6);
       hills = P("M0,360 L180,180 L320,360 Z", "#8EA8B8") + P("M240,360 L430,140 L620,360 Z", "#9EB4C4") + P("M400,208 L430,140 L460,208 Q430,196 400,208 Z", "#F2F6F8") + P("M540,360 L700,220 L800,360 Z", "#8EA8B8") + P("M0,360 L800,360 L800,500 L0,500 Z", "#7FA065") + P("M0,410 Q400,388 800,410 L800,500 L0,500 Z", "#6B8F58"); break;
     case "desert": sky = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2C88E"/><stop offset="1" stop-color="#FBE8C8"/></linearGradient></defs>` + R(0, 0, W, H, 0, "url(#sky)") + C(650, 100, 36, "#FFDD9A");
       hills = P("M0,350 Q200,300 420,350 T800,344 L800,500 L0,500 Z", "#E8C482") + P("M0,410 Q250,372 520,408 T800,400 L800,500 L0,500 Z", "#D9B06B"); break;
   }
-  return sky + hills;
+  return sky + `<g filter="url(#fwash)" opacity="0.55">${hills}</g>` + hills;
+}
+
+/* ---------- painterly post-process: gradient volume + paper texture + vignette ----------
+   แทนที่ fill สี flat ทุกสี (ยกเว้นเกือบดำ/เกือบขาว) ด้วย linearGradient แนวตั้ง (แสงจากบน)
+   + เจาะสีน้ำซึมขอบเนิน (fwash) + เกรนกระดาษ (fpaper) + ขอบมืดอุ่น (fvig) — ให้ทั้งเล่มเป็นโทนสีน้ำ */
+const hx = h => { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+const mixTo = (h, to, k) => { const a = hx(h), b = hx(to); return "#" + a.map((v, i) => Math.round(v + (b[i] - v) * k).toString(16).padStart(2, "0")).join(""); };
+const lum = h => { const [r, g, b] = hx(h); return (0.299 * r + 0.587 * g + 0.114 * b) / 255; };
+function paint(svg, { avatar = false } = {}) {
+  // เก็บสี flat ทั้งหมดที่ไม่ใกล้ดำ/ขาว → สร้าง gradient ต่อสี
+  const seen = new Set();
+  for (const m of svg.matchAll(/fill="#([0-9A-Fa-f]{6})"/g)) {
+    const c = m[1].toUpperCase();
+    if (!seen.has(c)) seen.add(c);
+  }
+  let defs = "";
+  for (const c of seen) {
+    const l = lum("#" + c);
+    if (l < 0.16 || l > 0.93) continue; // ตา/ขอบเข้ม กับพื้นขาว ปล่อย flat
+    defs += `<linearGradient id="g${c}" x1="0" y1="0" x2="0" y2="1">` +
+      `<stop offset="0" stop-color="${mixTo("#" + c, "#ffffff", 0.20)}"/>` +
+      `<stop offset="0.55" stop-color="#${c}"/>` +
+      `<stop offset="1" stop-color="${mixTo("#" + c, "#000000", 0.15)}"/></linearGradient>`;
+  }
+  defs += `<filter id="fwash" x="-8%" y="-8%" width="116%" height="116%"><feGaussianBlur stdDeviation="5"/></filter>`;
+  if (!avatar) {
+    defs += `<filter id="fpaper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0.42 0 0 0 0 0.35 0 0 0 0 0.27 0 0 0 0.05 0"/></filter>` +
+      `<radialGradient id="fvig" cx="0.5" cy="0.42" r="0.75"><stop offset="0.62" stop-color="#5E4433" stop-opacity="0"/><stop offset="1" stop-color="#5E4433" stop-opacity="0.17"/></radialGradient>` +
+      `<linearGradient id="fwarm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE9A8" stop-opacity="0.12"/><stop offset="0.4" stop-color="#FFE9A8" stop-opacity="0"/></linearGradient>`;
+  }
+  svg = svg.replace(/(<svg[^>]*>)/, `$1<defs>${defs}</defs>`);
+  svg = svg.replace(/fill="#([0-9A-Fa-f]{6})"/g, (m, c) => {
+    const C = c.toUpperCase(); const l = lum("#" + C);
+    return (defs.includes(`id="g${C}"`)) ? `fill="url(#g${C})"` : m;
+  });
+  if (!avatar) {
+    svg = svg.replace(/<\/svg>$/,
+      `<rect width="800" height="500" fill="url(#fwarm)"/>` +
+      `<rect width="800" height="500" fill="url(#fvig)"/>` +
+      `<rect width="800" height="500" filter="url(#fpaper)"/></svg>`);
+  }
+  return svg;
 }
 
 /* ---------- อุปกรณ์ฉาก (ฐานของทุกชิ้นวางบนเส้นพื้น y≈392–400 ไม่ลอย) ---------- */
@@ -568,18 +616,18 @@ const assets = path.join(root, "assets");
 fs.mkdirSync(path.join(assets, "c"), { recursive: true });
 let count = 0;
 for (const [key, cfg] of Object.entries(S)) {
-  fs.writeFileSync(path.join(assets, `p${key}.svg`), scene(cfg));
+  fs.writeFileSync(path.join(assets, `p${key}.svg`), paint(scene(cfg)));
   count++;
 }
 // ปก
-fs.writeFileSync(path.join(assets, "cover.svg"), scene({
+fs.writeFileSync(path.join(assets, "cover.svg"), paint(scene({
   bg: "night", props: ["banyan", "hangLantern", "sapling"], chars: [
     { id: "dan", x: 300, y: 400, s: 1.25 },
     { id: "jem", x: 540, y: 400, s: 1.25, emo: "happy" },
     { id: "rian", x: 390, y: 415, s: 1.0, emo: "happy" },
     { id: "huka", x: 480, y: 422, s: 0.9, emo: "happy" },
     { id: "moji", x: 230, y: 420, s: 1.0, emo: "happy" },
-  ] }));
+  ] })));
 // avatar ตัวละคร (หัวเดี่ยว) — ใช้ลำดับวาดเดียวกับฉาก + ชิ้นบอกสปีชีส์ที่หัวเดี่ยวมองไม่เห็น (โหนกอูฐ กระดองเต่า หางกระรอก)
 for (const [id, r] of Object.entries(ROSTER)) {
   const d = SPECIES[r.sp]; const saveDiscs = d.discs;
@@ -594,7 +642,7 @@ for (const [id, r] of Object.entries(ROSTER)) {
   if (r.sp === "raccoon") d.discs = saveDiscs;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-48 -52 96 104">` +
     C(0, 0, 47, "#FDF6E8", 'stroke="#E8D9B8" stroke-width="3"') + G(0, 4, 1.15, false, inner) + `</svg>`;
-  fs.writeFileSync(path.join(assets, "c", `${id}.svg`), svg);
+  fs.writeFileSync(path.join(assets, "c", `${id}.svg`), paint(svg, { avatar: true }));
   count++;
 }
 console.log(`สร้างแล้ว ${count} ไฟล์ (45 ตอน + ปก + ${Object.keys(ROSTER).length} avatars) ที่ ${assets}`);
